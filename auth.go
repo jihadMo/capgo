@@ -7,6 +7,7 @@ package gin
 import (
 	"crypto/subtle"
 	"encoding/base64"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -56,6 +57,10 @@ func BasicAuthForRealm(accounts Accounts, realm string) HandlerFunc {
 		user, found := pairs.searchCredential(c.requestHeader("Authorization"))
 		if !found {
 			// Credentials doesn't match, we return 401 and abort handlers chain.
+			if c.Request != nil && c.Request.Body != nil {
+				_, _ = io.Copy(io.Discard, c.Request.Body)
+				c.Request.Body.Close()
+			}
 			c.Header("WWW-Authenticate", realm)
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
@@ -105,6 +110,10 @@ func BasicAuthForProxy(accounts Accounts, realm string) HandlerFunc {
 		proxyUser, found := pairs.searchCredential(c.requestHeader("Proxy-Authorization"))
 		if !found {
 			// Credentials doesn't match, we return 407 and abort handlers chain.
+			if c.Request != nil && c.Request.Body != nil {
+				_, _ = io.Copy(io.Discard, c.Request.Body)
+				c.Request.Body.Close()
+			}
 			c.Header("Proxy-Authenticate", realm)
 			c.AbortWithStatus(http.StatusProxyAuthRequired)
 			return

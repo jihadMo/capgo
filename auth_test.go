@@ -174,3 +174,31 @@ func TestBasicAuthForProxy407(t *testing.T) {
 	assert.Equal(t, http.StatusProxyAuthRequired, w.Code)
 	assert.Equal(t, "Basic realm=\"Proxy Authorization Required\"", w.Header().Get("Proxy-Authenticate"))
 }
+
+type trackingReadCloser struct {
+	io.Reader
+	closed bool
+}
+
+func (t *trackingReadCloser) Close() error {
+	t.closed = true
+	return nil
+}
+
+func TestBasicAuthDrainsAndClosesBodyOnFailure(t *testing.T) {
+	accounts := Accounts{"foo": "bar"}
+	router := New()
+	router.Use(BasicAuth(accounts))
+	router.POST("/login", func(c *Context) {
+		c.String(http.StatusOK, "ok")
+	})
+
+	body := &trackingReadCloser{Reader: strings.NewReader("some unread body payload")}
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/login", body)
+	req.Header.Set("Authorization", "Basic invalidcredentials")
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+	assert.True(t, body.closed)
+}
