@@ -1,0 +1,60 @@
+package audit
+
+import (
+	"context"
+
+	"github.com/sorotrail/sorotrail/internal/rpc"
+)
+
+// budgetedClient wraps an inner rpc.Client, accounting every call against
+// Budget.WaitAudit before dispatching.
+type budgetedClient struct {
+	inner  rpc.Client
+	budget *rpc.Budget
+}
+
+// NewBudgetedClient returns an rpc.Client that shares the same underlying
+// connection as inner but reserves tokens from the audit pool of b on
+// every call. A nil b is permitted (the audit becomes un-paced; useful
+// only in tests).
+func NewBudgetedClient(inner rpc.Client, b *rpc.Budget) rpc.Client {
+	return &budgetedClient{inner: inner, budget: b}
+}
+
+func (c *budgetedClient) GetEvents(ctx context.Context, req rpc.GetEventsRequest) (rpc.GetEventsResponse, error) {
+	if err := c.budget.WaitAudit(ctx); err != nil {
+		return rpc.GetEventsResponse{}, err
+	}
+	return c.inner.GetEvents(ctx, req)
+}
+
+func (c *budgetedClient) GetLatestLedger(ctx context.Context) (rpc.LatestLedger, error) {
+	if err := c.budget.WaitAudit(ctx); err != nil {
+		return rpc.LatestLedger{}, err
+	}
+	return c.inner.GetLatestLedger(ctx)
+}
+
+func (c *budgetedClient) GetHealth(ctx context.Context) (rpc.Health, error) {
+	if err := c.budget.WaitAudit(ctx); err != nil {
+		return rpc.Health{}, err
+	}
+	return c.inner.GetHealth(ctx)
+}
+
+func (c *budgetedClient) GetLedgerEntries(ctx context.Context, req rpc.GetLedgerEntriesRequest) (rpc.GetLedgerEntriesResponse, error) {
+	if err := c.budget.WaitAudit(ctx); err != nil {
+		return rpc.GetLedgerEntriesResponse{}, err
+	}
+	return c.inner.GetLedgerEntries(ctx, req)
+}
+
+func (c *budgetedClient) SimulateTransaction(ctx context.Context, req rpc.SimulateTransactionRequest) (rpc.SimulateTransactionResponse, error) {
+	if err := c.budget.WaitAudit(ctx); err != nil {
+		return rpc.SimulateTransactionResponse{}, err
+	}
+	return c.inner.SimulateTransaction(ctx, req)
+}
+
+// Compile-time check that we satisfy the rpc.Client interface.
+var _ rpc.Client = (*budgetedClient)(nil)
