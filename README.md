@@ -1,24 +1,16 @@
-# Claude Code Destructive Command Guard Hook ($100 Bounty)
+# Git CHANGELOG Generator Skill ($50 Bounty)
 
-A lightweight `pre-tool-use` security hook for Claude Code that intercepts and blocks dangerous bash commands before execution.
+Automated tool and Claude Code skill to generate structured, categorized `CHANGELOG.md` files from git history.
 
-## Features
-
-- 🛡️ **Pattern Protection**: Blocks `rm -rf`, `DROP TABLE`, `git push --force` (`-f`), `TRUNCATE`, and `DELETE FROM` without a `WHERE` clause.
-- 📝 **Audit Logging**: Logs every blocked attempt with an ISO timestamp, attempted command, and project path to `~/.claude/hooks/blocked.log`.
-- ⚠️ **Clear User Alerts**: Displays informative security warning messages explaining why the command was blocked.
-- ⚡ **Zero Interruption**: Allows all safe bash commands to execute cleanly.
-
-## Installation in 2 Commands
+## 3-Step Setup
 
 ```bash
-mkdir -p ~/.claude/hooks && curl -sSL https://raw.githubusercontent.com/jihadMo/capgo/fix/destructive-command-guard-hook/hooks/block-destructive-commands.py -o ~/.claude/hooks/pre-tool-use
-chmod +x ~/.claude/hooks/pre-tool-use
-```
+# 1. Download generator script
+curl -sSL https://raw.githubusercontent.com/jihadMo/capgo/fix/git-changelog-generator-skill/scripts/generate-changelog.py -o scripts/generate-changelog.py
 
-## Testing
+# 2. Make executable
+chmod +x scripts/generate-changelog.py
 
-```bash
-python3 hooks/block-destructive-commands.py "rm -rf /"
-# Output: [SECURITY GUARD BLOCKED] Destructive command detected: rm -rf (Recursive forced removal)
+# 3. Generate CHANGELOG.md
+python3 scripts/generate-changelog.py
 ```
