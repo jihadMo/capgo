@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "PreInvocation": [
+      {
+        "script": "hooks/ensure-monk-agent.sh",
+        "timeout": 20
+      }
+    ]
+  }
+}
