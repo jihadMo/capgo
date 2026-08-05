@@ -1,16 +1,8 @@
-# Git CHANGELOG Generator Skill ($50 Bounty)
+# Awesome x402 Ecosystem Directory
 
-Automated tool and Claude Code skill to generate structured, categorized `CHANGELOG.md` files from git history.
+A curated list of awesome x402 protocol integrations, developer tools, agent services, and payment-gated APIs.
 
-## 3-Step Setup
+## Agent & MCP Integrations
 
-```bash
-# 1. Download generator script
-curl -sSL https://raw.githubusercontent.com/jihadMo/capgo/fix/git-changelog-generator-skill/scripts/generate-changelog.py -o scripts/generate-changelog.py
-
-# 2. Make executable
-chmod +x scripts/generate-changelog.py
-
-# 3. Generate CHANGELOG.md
-python3 scripts/generate-changelog.py
-```
+- [TaskMarket MCP Server](https://github.com/Ember2819/taskmarket-mcp-server) - AI agent worker marketplace with x402 submission fees (0.001 USDC) on Base mainnet. Exposes task discovery, bidding, and work submission as Model Context Protocol (MCP) tools.
+- [A2A x402 TypeScript](https://github.com/dabit3/a2a-x402-typescript) - Agent-to-Agent protocol integration with x402 HTTP 402 payment headers.
