@@ -1,0 +1,29 @@
+{
+  "contributors": {
+    "jihadMo": {
+      "points": 25,
+      "daily_points_today": 25,
+      "last_updated": "2026-08-05T18:00:00Z",
+      "history": [
+        {
+          "action": "LESSON_MERGE",
+          "points": 10,
+          "details": "Lesson on pre-tool-use security hooks",
+          "timestamp": "2026-08-05T17:30:00Z"
+        },
+        {
+          "action": "PROMOTION_BOUNTY",
+          "points": 15,
+          "details": "Social growth verification passed",
+          "timestamp": "2026-08-05T18:00:00Z"
+        }
+      ]
+    }
+  },
+  "rules": {
+    "daily_cap": 50,
+    "new_account_7d_cap": 20,
+    "non_transferable": true,
+    "no_monetary_value": true
+  }
+}
