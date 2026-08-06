@@ -1,0 +1,8 @@
+{
+  "deprecated": [
+    { "vendor": "Railway", "url": "https://startup.railway.app/", "statusCode": 404, "reason": "Program page deleted (404)" },
+    { "vendor": "Doppler", "url": "https://www.doppler.com/startups", "statusCode": 404, "reason": "Program page deleted (404)" },
+    { "vendor": "Segment", "url": "https://segment.com/industry/startups/", "statusCode": 301, "reason": "Redirected to Twilio general startups" },
+    { "vendor": "Census", "url": "https://www.getcensus.com/", "statusCode": 301, "reason": "Redirected to Fivetran" }
+  ]
+}
