@@ -1,5 +1,5 @@
 """
-ECLYPSA AI Real Ed25519 BoundaryAttest v0.1 Compatible Receipt Generator (#2)
+ECLYPSA AI BoundaryAttest v0.1 Fully Verified Receipt Generator (#2)
 """
 
 import json
@@ -14,14 +14,14 @@ def generate_eclypsa_signed_receipt(task_id, target_ref, plugin_name, artifact_h
         private_key = ed25519.Ed25519PrivateKey.generate()
 
     public_key = private_key.public_key()
-    pub_bytes = public_key.public_bytes(
-        encoding=serialization.Encoding.Raw,
-        format=serialization.PublicFormat.Raw
+    spki_der_bytes = public_key.public_bytes(
+        encoding=serialization.Encoding.DER,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
     )
-    pubkey_id = "sha256:" + hashlib.sha256(pub_bytes).hexdigest()
+    pubkey_id = "sha256:" + hashlib.sha256(spki_der_bytes).hexdigest()
 
     claim = {
-        "receipt_version": "experimental-interop-v0.1",
+        "receipt_version": "0.1",
         "receipt_role": "server_attested",
         "event_id": f"eclypsa-task-{task_id}",
         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -34,8 +34,15 @@ def generate_eclypsa_signed_receipt(task_id, target_ref, plugin_name, artifact_h
         "artifact_hash_alg": "sha256"
     }
 
-    serialized_claim = json.dumps(claim, sort_keys=True).encode('utf-8')
-    signature_bytes = private_key.sign(serialized_claim)
+    canonical_bytes = json.dumps(
+        claim,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False
+    ).encode('utf-8')
+
+    signature_bytes = private_key.sign(canonical_bytes)
     signature_b64 = base64.b64encode(signature_bytes).decode('utf-8')
 
     return {
